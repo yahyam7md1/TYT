@@ -1,0 +1,58 @@
+﻿<Window x:Class="Tyt.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TrackYourTime"
+        Height="800"
+        Width="1280"
+        MinHeight="600"
+        MinWidth="960"
+        Background="#F3F4F6"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#111827">
+            <DockPanel Margin="16">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Text="TYT" Foreground="White" FontSize="22" FontWeight="Bold"/>
+                    <TextBlock Text="TrackYourTime" Foreground="#9CA3AF" Margin="0,4,0,24"/>
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Bottom">
+                    <TextBlock Text="{Binding StatusText}"
+                               Foreground="#D1D5DB"
+                               Margin="0,0,0,8"/>
+                    <Button Content="{Binding IsPaused, Converter={StaticResource PauseLabel}}"
+                            Command="{Binding TogglePauseCommand}"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <RadioButton Content="Today"
+                                 GroupName="Nav"
+                                 IsChecked="True"
+                                 Command="{Binding GoTodayCommand}"
+                                 Style="{StaticResource NavRadio}"/>
+                    <RadioButton Content="Week"
+                                 GroupName="Nav"
+                                 Command="{Binding GoWeekCommand}"
+                                 Style="{StaticResource NavRadio}"/>
+                    <RadioButton Content="Timeline"
+                                 GroupName="Nav"
+                                 Command="{Binding GoTimelineCommand}"
+                                 Style="{StaticResource NavRadio}"/>
+                    <RadioButton Content="Settings"
+                                 GroupName="Nav"
+                                 Command="{Binding GoSettingsCommand}"
+                                 Style="{StaticResource NavRadio}"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <ContentControl Grid.Column="1"
+                        Margin="28"
+                        Content="{Binding CurrentPage}"/>
+    </Grid>
+</Window>
