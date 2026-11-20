@@ -7,10 +7,25 @@
     <Application.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVis"/>
         <converters:BoolToVisibilityConverter x:Key="InverseBoolToVis" Invert="True"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVis"/>
         <converters:PauseLabelConverter x:Key="PauseLabel"/>
+
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
 
         <DataTemplate DataType="{x:Type vm:TodayViewModel}">
             <views:TodayView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:WeekViewModel}">
+            <views:WeekView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TimelineViewModel}">
+            <views:TimelineView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <views:SettingsView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:PlaceholderViewModel}">
             <views:PlaceholderView/>

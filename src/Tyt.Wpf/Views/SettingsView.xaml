@@ -1,0 +1,65 @@
+<UserControl x:Class="Tyt.Wpf.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel MaxWidth="640" HorizontalAlignment="Left">
+            <TextBlock Text="Settings" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,8"/>
+            <TextBlock Text="These controls are local to this PC. Tracking itself is still mocked."
+                       Foreground="#6B7280" TextWrapping="Wrap" Margin="0,0,0,20"/>
+
+            <Border Background="White" Padding="16" CornerRadius="8" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Idle threshold" FontWeight="SemiBold"/>
+                    <TextBlock Text="After this many minutes without input, time counts as idle (used later by the tracker)."
+                               Foreground="#6B7280" TextWrapping="Wrap" Margin="0,4,0,12"/>
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Right" Width="72" TextAlignment="Right"
+                                   VerticalAlignment="Center">
+                            <Run Text="{Binding IdleMinutes, Mode=OneWay}"/>
+                            <Run Text=" min"/>
+                        </TextBlock>
+                        <Slider Minimum="1" Maximum="60" TickFrequency="1" IsSnapToTickEnabled="True"
+                                Value="{Binding IdleMinutes}"/>
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Background="White" Padding="16" CornerRadius="8" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Tracking" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <CheckBox Content="Launch at Windows startup"
+                              IsChecked="{Binding LaunchAtStartup}"
+                              Margin="0,0,0,12"/>
+                    <TextBlock Text="The checkbox is saved in memory only. Registry autostart is not wired yet."
+                               Foreground="#6B7280" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,12"/>
+                    <Button Content="{Binding IsPaused, Converter={StaticResource PauseLabel}}"
+                            Command="{Binding TogglePauseCommand}"
+                            HorizontalAlignment="Left"
+                            Padding="12,6"/>
+                </StackPanel>
+            </Border>
+
+            <Border Background="White" Padding="16" CornerRadius="8" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Privacy" FontWeight="SemiBold"/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" Foreground="#374151"
+                               Text="Activity records stay on this computer. TYT does not take screenshots, log keystrokes, or send usage data to a server."/>
+                </StackPanel>
+            </Border>
+
+            <Border Background="White" Padding="16" CornerRadius="8" BorderBrush="#FECACA" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Data" FontWeight="SemiBold"/>
+                    <TextBlock Text="Remove all activity segments from the local mock store. Today, Week, and Timeline will show empty states."
+                               TextWrapping="Wrap" Foreground="#6B7280" Margin="0,4,0,12"/>
+                    <Button Content="Delete all activity data"
+                            Command="{Binding DeleteAllDataCommand}"
+                            HorizontalAlignment="Left"
+                            Padding="12,6"
+                            Background="#FEE2E2"
+                            BorderBrush="#F87171"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

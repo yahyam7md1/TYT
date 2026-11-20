@@ -1,0 +1,116 @@
+<UserControl x:Class="Tyt.Wpf.Views.TimelineView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Tyt.Wpf.ViewModels">
+    <UserControl.Resources>
+        <Style x:Key="KindTag" TargetType="Border">
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Background" Value="#DBEAFE"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsIdle}" Value="True">
+                    <Setter Property="Background" Value="#E5E7EB"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <DockPanel Margin="0,0,0,16">
+                <Button DockPanel.Dock="Left"
+                        Content="◀"
+                        Command="{Binding PreviousDayCommand}"
+                        Width="36" Height="32" Margin="0,0,8,0"/>
+                <Button DockPanel.Dock="Right"
+                        Content="▶"
+                        Command="{Binding NextDayCommand}"
+                        IsEnabled="{Binding CanGoNext}"
+                        Width="36" Height="32" Margin="8,0,0,0"/>
+                <TextBlock Text="{Binding DateLabel}" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            </DockPanel>
+
+            <Border Background="#FEF3C7" Padding="12" CornerRadius="8" Margin="0,0,0,16"
+                    Visibility="{Binding IsPaused, Converter={StaticResource BoolToVis}}">
+                <TextBlock Text="Tracking is paused. Time is not being recorded."/>
+            </Border>
+
+            <TextBlock Margin="0,0,0,12" Foreground="#6B7280">
+                <Run Text="Active for this day: "/>
+                <Run Text="{Binding ActiveTotal, Mode=OneWay}" FontWeight="SemiBold" Foreground="#111827"/>
+            </TextBlock>
+
+            <TextBlock Text="No activity recorded for this day."
+                       Foreground="#6B7280"
+                       Visibility="{Binding HasData, Converter={StaticResource InverseBoolToVis}}"/>
+
+            <ItemsControl ItemsSource="{Binding Blocks}"
+                          Visibility="{Binding HasData, Converter={StaticResource BoolToVis}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:TimelineBlock}">
+                        <Button Command="{Binding DataContext.SelectBlockCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding}"
+                                Margin="0,0,0,8"
+                                HorizontalContentAlignment="Stretch"
+                                Cursor="Hand"
+                                ToolTip="{Binding Detail}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="White" CornerRadius="8" Padding="12" BorderBrush="#E5E7EB" BorderThickness="1">
+                                        <ContentPresenter/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0"
+                                        Width="8"
+                                        Height="{Binding BarHeight}"
+                                        CornerRadius="4"
+                                        VerticalAlignment="Stretch">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="#3B82F6"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsIdle}" Value="True">
+                                                    <Setter Property="Background" Value="#9CA3AF"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="15"/>
+                                    <TextBlock Text="{Binding Range}" Foreground="#6B7280" Margin="0,2,0,0"/>
+                                    <TextBlock Text="Until now" Foreground="#2563EB" FontSize="12"
+                                               Visibility="{Binding IsOpen, Converter={StaticResource BoolToVis}}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <Border Style="{StaticResource KindTag}" HorizontalAlignment="Right">
+                                        <TextBlock Text="{Binding KindLabel}" FontSize="12"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding Duration}" Margin="0,6,0,0" HorizontalAlignment="Right" Foreground="#6B7280"/>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Border Background="#111827" Padding="16" CornerRadius="8" Margin="0,12,0,0"
+                    Visibility="{Binding SelectedBlock, Converter={StaticResource NullToVis}}">
+                <StackPanel>
+                    <TextBlock Text="Selected block" Foreground="#9CA3AF" FontSize="12"/>
+                    <TextBlock Text="{Binding SelectedBlock.Title}" Foreground="White" FontSize="18" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                    <TextBlock Text="{Binding SelectedBlock.KindLabel}" Foreground="#D1D5DB" Margin="0,4,0,0"/>
+                    <TextBlock Text="{Binding SelectedBlock.Range}" Foreground="#D1D5DB"/>
+                    <TextBlock Text="{Binding SelectedBlock.Duration}" Foreground="#D1D5DB"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

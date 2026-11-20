@@ -1,6 +1,10 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using Tyt.App.Dashboard;
 using Tyt.Core.Abstractions;
 using Tyt.Core.Models;
@@ -38,6 +42,9 @@ public partial class TodayViewModel : ObservableObject
     public ObservableCollection<AppUsageRow> TopApps { get; } = [];
 
     public ObservableCollection<SegmentRow> Segments { get; } = [];
+
+    [ObservableProperty]
+    private ISeries[] _distributionSeries = [];
 
     public TodayViewModel(IUsageQuery usageQuery, ITrackingController tracking)
     {
@@ -92,6 +99,8 @@ public partial class TodayViewModel : ObservableObject
             });
         }
 
+        DistributionSeries = BuildDistribution(summary);
+
         Segments.Clear();
         foreach (var segment in segments)
         {
@@ -112,5 +121,56 @@ public partial class TodayViewModel : ObservableObject
                 Duration = DurationFormatter.ToReadable(duration)
             });
         }
+    }
+
+    private static readonly SKColor[] AppColors =
+    [
+        new(0x3B, 0x82, 0xF6),
+        new(0x10, 0xB9, 0x81),
+        new(0xF5, 0x9E, 0x0B),
+        new(0x8B, 0x5C, 0xF6),
+        new(0xEC, 0x48, 0x99),
+        new(0x14, 0xB8, 0xA6)
+    ];
+
+    private static ISeries[] BuildDistribution(DaySummary summary)
+    {
+        var slices = new List<ISeries>();
+        var colorIndex = 0;
+
+        foreach (var app in summary.TopApps)
+        {
+            if (app.Active <= TimeSpan.Zero)
+            {
+                continue;
+            }
+
+            slices.Add(CreateSlice(
+                app.App.Name,
+                app.Active,
+                AppColors[colorIndex % AppColors.Length]));
+            colorIndex++;
+        }
+
+        if (summary.Idle > TimeSpan.Zero)
+        {
+            slices.Add(CreateSlice("Idle", summary.Idle, new SKColor(0x9C, 0xA3, 0xAF)));
+        }
+
+        return [.. slices];
+    }
+
+    private static PieSeries<double> CreateSlice(string name, TimeSpan duration, SKColor color)
+    {
+        var minutes = duration.TotalMinutes;
+        return new PieSeries<double>
+        {
+            Name = name,
+            Values = [minutes],
+            InnerRadius = 50,
+            Fill = new SolidColorPaint(color),
+            ToolTipLabelFormatter = point =>
+                $"{name}: {DurationFormatter.ToReadable(TimeSpan.FromMinutes(point.Coordinate.PrimaryValue))}"
+        };
     }
 }

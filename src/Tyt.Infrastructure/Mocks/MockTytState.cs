@@ -24,6 +24,32 @@ public sealed class MockTytState
         var slack = new AppInfo { Id = "slack", Name = "Slack", ExePath = @"C:\Users\user\AppData\Local\slack\slack.exe" };
         var cursor = new AppInfo { Id = "cursor", Name = "Cursor", ExePath = @"C:\Users\user\AppData\Local\Programs\cursor\Cursor.exe" };
 
+        var monday = today.AddDays(-(((int)today.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7));
+
+        void AddPastDay(DateTime day, params Segment[] daySegments)
+        {
+            if (day.Date >= today)
+            {
+                return;
+            }
+
+            state.Segments.AddRange(daySegments);
+        }
+
+        AddPastDay(monday,
+            Active(vs, monday, 9, 0, 12, 0),
+            Active(chrome, monday, 12, 0, 13, 0),
+            Idle(monday, 13, 0, 13, 30));
+
+        AddPastDay(monday.AddDays(1),
+            Active(cursor, monday.AddDays(1), 10, 0, 14, 0),
+            Active(slack, monday.AddDays(1), 14, 0, 15, 0));
+
+        AddPastDay(monday.AddDays(3),
+            Active(chrome, monday.AddDays(3), 9, 0, 11, 0),
+            Active(vs, monday.AddDays(3), 11, 0, 13, 0),
+            Idle(monday.AddDays(3), 13, 0, 14, 0));
+
         state.Segments.AddRange(
         [
             Active(vs, today, 9, 0, 10, 30),

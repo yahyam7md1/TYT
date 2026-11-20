@@ -7,7 +7,9 @@
         MinHeight="600"
         MinWidth="960"
         Background="#F3F4F6"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
@@ -18,7 +20,8 @@
             <DockPanel Margin="16">
                 <StackPanel DockPanel.Dock="Top">
                     <TextBlock Text="TYT" Foreground="White" FontSize="22" FontWeight="Bold"/>
-                    <TextBlock Text="TrackYourTime" Foreground="#9CA3AF" Margin="0,4,0,24"/>
+                    <TextBlock Text="TrackYourTime" Foreground="#9CA3AF" Margin="0,4,0,4"/>
+                    <TextBlock Text="Data stays on this PC" Foreground="#6B7280" FontSize="11" Margin="0,0,0,24"/>
                 </StackPanel>
 
                 <StackPanel DockPanel.Dock="Bottom">

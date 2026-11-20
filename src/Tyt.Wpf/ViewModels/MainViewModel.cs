@@ -19,23 +19,23 @@ public partial class MainViewModel : ObservableObject
 
     public TodayViewModel Today { get; }
 
-    public PlaceholderViewModel Week { get; } = new(
-        "Week",
-        "Weekly totals and per-day bars will land in Phase 3. Same mock segments as Today.");
+    public WeekViewModel Week { get; }
 
-    public PlaceholderViewModel Timeline { get; } = new(
-        "Timeline",
-        "A chronological day view will land in Phase 4.");
+    public TimelineViewModel Timeline { get; }
 
-    public PlaceholderViewModel Settings { get; } = new(
-        "Settings",
-        "Idle threshold, pause, autostart, and delete data will land in Phase 5.");
+    public SettingsViewModel Settings { get; }
 
-    public MainViewModel(IUsageQuery usageQuery, ITrackingController tracking, ISettingsStore settingsStore)
+    public MainViewModel(
+        IUsageQuery usageQuery,
+        ITrackingController tracking,
+        ISettingsStore settingsStore,
+        IActivityCommands activity)
     {
-        _ = settingsStore;
         _tracking = tracking;
         Today = new TodayViewModel(usageQuery, tracking);
+        Week = new WeekViewModel(usageQuery, tracking);
+        Timeline = new TimelineViewModel(usageQuery, tracking);
+        Settings = new SettingsViewModel(settingsStore, tracking, activity);
         CurrentPage = Today;
         _tracking.StateChanged += (_, _) => UpdateStatus();
         UpdateStatus();
@@ -56,6 +56,7 @@ public partial class MainViewModel : ObservableObject
     {
         SelectedNav = "Week";
         CurrentPage = Week;
+        Week.Refresh();
     }
 
     [RelayCommand]
@@ -63,6 +64,7 @@ public partial class MainViewModel : ObservableObject
     {
         SelectedNav = "Timeline";
         CurrentPage = Timeline;
+        Timeline.Refresh();
     }
 
     [RelayCommand]
