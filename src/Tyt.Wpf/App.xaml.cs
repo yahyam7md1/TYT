@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 using System.Windows;
-using Tyt.Infrastructure.Mocks;
+using Microsoft.Win32;
+using Tyt.Infrastructure.Persistence;
+using Tyt.Infrastructure.Tracking;
 using Tyt.Wpf.Tray;
 using Tyt.Wpf.ViewModels;
 
@@ -10,6 +12,9 @@ public partial class App : Application
 {
     private Mutex? _singleInstance;
     private TrayService? _tray;
+    private TytDatabase? _db;
+    private TrackingController? _tracking;
+    private TrackerHost? _host;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -25,14 +30,19 @@ public partial class App : Application
             return;
         }
 
-        var state = MockTytState.CreateSeeded();
-        var tracking = new InMemoryTrackingController(state);
-        var main = new MainViewModel(
-            new MockUsageQuery(state),
-            tracking,
-            new InMemorySettingsStore(state),
-            new InMemoryActivityCommands(state));
+        _db = new TytDatabase(TytPaths.DatabaseFile);
+        var store = new SegmentStore(_db);
+        var settings = new SqliteSettingsStore(_db);
+        var query = new SqliteUsageQuery(store);
+        _host = new TrackerHost(store, settings, query);
+        var activity = new SqliteActivityCommands(store, _host, query);
+        _tracking = new TrackingController(_host, settings);
+        Autostart.Apply(settings.Get().LaunchAtStartup);
 
+        SystemEvents.PowerModeChanged += OnPowerModeChanged;
+        SystemEvents.SessionEnding += OnSessionEnding;
+
+        var main = new MainViewModel(query, _tracking, settings, activity);
         var window = new MainWindow
         {
             DataContext = main
@@ -43,9 +53,23 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        SystemEvents.PowerModeChanged -= OnPowerModeChanged;
+        SystemEvents.SessionEnding -= OnSessionEnding;
         _tray?.Dispose();
+        _tracking?.Dispose();
+        _db?.Dispose();
         _singleInstance?.ReleaseMutex();
         _singleInstance?.Dispose();
         base.OnExit(e);
     }
+
+    private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+    {
+        if (e.Mode == PowerModes.Suspend)
+        {
+            _host?.HandleSuspend();
+        }
+    }
+
+    private void OnSessionEnding(object sender, SessionEndingEventArgs e) => _host?.HandleSuspend();
 }

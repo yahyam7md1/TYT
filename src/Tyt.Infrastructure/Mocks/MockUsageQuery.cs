@@ -5,6 +5,12 @@ namespace Tyt.Infrastructure.Mocks;
 
 public sealed class MockUsageQuery(MockTytState state) : IUsageQuery
 {
+    public event EventHandler? Changed
+    {
+        add => state.Changed += value;
+        remove => state.Changed -= value;
+    }
+
     public IReadOnlyList<Segment> GetDay(DateOnly date) => GetRange(date, date);
 
     public IReadOnlyList<Segment> GetRange(DateOnly from, DateOnly toInclusive)

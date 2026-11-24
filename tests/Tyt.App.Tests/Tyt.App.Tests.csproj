@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Tyt.App\Tyt.App.csproj" />
     <ProjectReference Include="..\..\src\Tyt.Core\Tyt.Core.csproj" />
+    <ProjectReference Include="..\..\src\Tyt.Infrastructure\Tyt.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

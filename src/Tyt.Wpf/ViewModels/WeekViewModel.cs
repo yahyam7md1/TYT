@@ -57,6 +57,7 @@ public partial class WeekViewModel : ObservableObject
         _usageQuery = usageQuery;
         _tracking = tracking;
         _tracking.StateChanged += (_, _) => Refresh();
+        _usageQuery.Changed += (_, _) => Refresh();
         Refresh();
     }
 

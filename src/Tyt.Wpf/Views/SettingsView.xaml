@@ -4,13 +4,13 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel MaxWidth="640" HorizontalAlignment="Left">
             <TextBlock Text="Settings" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,8"/>
-            <TextBlock Text="These controls are local to this PC. Tracking itself is still mocked."
+            <TextBlock Text="These controls are local to this PC. Activity is stored in a SQLite file under AppData."
                        Foreground="#6B7280" TextWrapping="Wrap" Margin="0,0,0,20"/>
 
             <Border Background="White" Padding="16" CornerRadius="8" Margin="0,0,0,12">
                 <StackPanel>
                     <TextBlock Text="Idle threshold" FontWeight="SemiBold"/>
-                    <TextBlock Text="After this many minutes without input, time counts as idle (used later by the tracker)."
+                    <TextBlock Text="After this many minutes without mouse or keyboard input, time counts as idle."
                                Foreground="#6B7280" TextWrapping="Wrap" Margin="0,4,0,12"/>
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Right" Width="72" TextAlignment="Right"
@@ -30,7 +30,7 @@
                     <CheckBox Content="Launch at Windows startup"
                               IsChecked="{Binding LaunchAtStartup}"
                               Margin="0,0,0,12"/>
-                    <TextBlock Text="The checkbox is saved in memory only. Registry autostart is not wired yet."
+                    <TextBlock Text="When checked, Windows starts TYT with this user (HKCU Run, no admin)."
                                Foreground="#6B7280" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,12"/>
                     <Button Content="{Binding IsPaused, Converter={StaticResource PauseLabel}}"
                             Command="{Binding TogglePauseCommand}"
@@ -50,7 +50,7 @@
             <Border Background="White" Padding="16" CornerRadius="8" BorderBrush="#FECACA" BorderThickness="1">
                 <StackPanel>
                     <TextBlock Text="Data" FontWeight="SemiBold"/>
-                    <TextBlock Text="Remove all activity segments from the local mock store. Today, Week, and Timeline will show empty states."
+                    <TextBlock Text="Remove all activity segments from the local database. Today, Week, and Timeline will show empty states."
                                TextWrapping="Wrap" Foreground="#6B7280" Margin="0,4,0,12"/>
                     <Button Content="Delete all activity data"
                             Command="{Binding DeleteAllDataCommand}"

@@ -92,7 +92,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2">
-                    <TextBlock Text="Segments (mock)" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,8"/>
+                    <TextBlock Text="Segments" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,8"/>
                     <ItemsControl ItemsSource="{Binding Segments}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>

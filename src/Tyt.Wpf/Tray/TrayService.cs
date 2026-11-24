@@ -11,6 +11,7 @@ public sealed class TrayService : IDisposable
     private readonly MainWindow _window;
     private readonly MainViewModel _viewModel;
     private readonly NotifyIcon _icon;
+    private readonly Icon _ownedIcon;
     private readonly ToolStripMenuItem _pauseItem;
 
     public TrayService(MainWindow window, MainViewModel viewModel)
@@ -27,9 +28,10 @@ public sealed class TrayService : IDisposable
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add("Quit", null, (_, _) => Quit());
 
+        _ownedIcon = LoadAppIcon();
         _icon = new NotifyIcon
         {
-            Icon = SystemIcons.Application,
+            Icon = _ownedIcon,
             Visible = true,
             ContextMenuStrip = menu
         };
@@ -61,6 +63,18 @@ public sealed class TrayService : IDisposable
     {
         _icon.Visible = false;
         _icon.Dispose();
+        _ownedIcon.Dispose();
+    }
+
+    private static Icon LoadAppIcon()
+    {
+        var resource = Application.GetResourceStream(new Uri("pack://application:,,,/Assets/app.ico"));
+        if (resource is null)
+        {
+            return (Icon)SystemIcons.Application.Clone();
+        }
+
+        return new Icon(resource.Stream);
     }
 
     private void UpdatePauseLabel()

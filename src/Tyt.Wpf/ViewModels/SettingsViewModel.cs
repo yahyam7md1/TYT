@@ -79,7 +79,7 @@ public partial class SettingsViewModel : ObservableObject
     private void DeleteAllData()
     {
         var result = System.Windows.MessageBox.Show(
-            "Delete all locally stored activity records? This cannot be undone (mock data in this build).",
+            "Delete all locally stored activity records? This cannot be undone.",
             "Delete activity data",
             System.Windows.MessageBoxButton.YesNo,
             System.Windows.MessageBoxImage.Warning);
